@@ -1,0 +1,25 @@
+{
+  "type": "panel",
+  "name": "Switch",
+  "id": "grafana-switch-panel",
+
+  "info": {
+    "description": "Switch panel for Grafana",
+    "author": {
+      "name": "Waldo Spek",
+      "url": "https://waldospek.com"
+    },
+    "keywords": ["switch", "panel"],
+    "logos": {
+      "small": "img/switch_logo.svg",
+      "large": "img/swicth_logo.svg"
+    },
+    "version": "1.0.0",
+    "updated": "2019-02-23"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "5.x.x",
+    "plugins": [ ]
+  }
+}
