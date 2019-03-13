@@ -218,7 +218,7 @@
     position: relative;
     display: block;
     height: 20px;
-    width: 60px;
+    width: 50px;
     background: #B22222;
     border-radius: 100px;
     cursor: pointer;
@@ -241,6 +241,6 @@
     background: #4CAF50;
 }
 .tgl-sw-android-checked + .btn-switch:after {
-    left: 40px;
+    left: 26px;
     background: #3e8e41;
 }
