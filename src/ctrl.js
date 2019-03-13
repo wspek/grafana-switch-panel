@@ -11,7 +11,7 @@ export class D3GaugePanelCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, alertSrv) {
     super($scope, $injector);
 
-    this.events.on('data-received', this.onDataReceived.bind(this));
+    this.events.on('panel-initialized', this.render.bind(this));
   }
 
   link(scope, elem, attrs, ctrl) {    
@@ -25,10 +25,6 @@ export class D3GaugePanelCtrl extends MetricsPanelCtrl {
       render();
       ctrl.renderingCompleted();
     });
-  }
-
-  onDataReceived(dataList) {
-    this.render();
   }
 }
 
