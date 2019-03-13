@@ -1,4 +1,4 @@
-import {MetricsPanelCtrl} from 'app/plugins/sdk';
+import {PanelCtrl} from 'app/plugins/sdk';
 import $ from 'jquery';
 
 import './external/jquery.btnswitch';
@@ -6,7 +6,7 @@ import './external/jquery.btnswitch.css!';
 import './css/panel.css!';
 
 
-export class D3GaugePanelCtrl extends MetricsPanelCtrl {
+export class D3GaugePanelCtrl extends PanelCtrl {
 
   constructor($scope, $injector, alertSrv) {
     super($scope, $injector);
