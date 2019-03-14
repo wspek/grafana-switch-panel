@@ -1,5 +1,5 @@
-import {D3GaugePanelCtrl} from  './ctrl';
+import {SwitchCtrl} from  './ctrl';
 
 export {
-  D3GaugePanelCtrl as PanelCtrl
+  SwitchCtrl as PanelCtrl
 };

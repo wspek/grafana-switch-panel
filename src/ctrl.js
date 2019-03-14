@@ -6,7 +6,7 @@ import './external/jquery.btnswitch.css!';
 import './css/panel.css!';
 
 
-export class D3GaugePanelCtrl extends PanelCtrl {
+export class SwitchCtrl extends PanelCtrl {
 
   constructor($scope, $injector, alertSrv) {
     super($scope, $injector);
@@ -28,4 +28,4 @@ export class D3GaugePanelCtrl extends PanelCtrl {
   }
 }
 
-D3GaugePanelCtrl.templateUrl = 'partials/template.html';
+SwitchCtrl.templateUrl = 'partials/template.html';
