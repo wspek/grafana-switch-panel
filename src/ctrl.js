@@ -10,15 +10,29 @@ export class SwitchCtrl extends PanelCtrl {
 
   constructor($scope, $injector, alertSrv) {
     super($scope, $injector);
+    
+    this.switchDivId = 'switch_' + this.panel.id;
+
+    var panelDefaults = {
+      test: 'testing',
+    };
+    _.defaults(this.panel, panelDefaults);
 
     this.events.on('panel-initialized', this.render.bind(this));
   }
 
-  link(scope, elem, attrs, ctrl) {    
-    function render() {     
-      $('#demo4').btnSwitch({
+  renderSwitch() {
+      $('#'+this.switchDivId).btnSwitch({
         Theme: 'Android'
       });
+  }
+
+  link(scope, elem, attrs, ctrl) { 
+    var switchByClass = elem.find('.switchbox');
+    switchByClass.append('<div id="'+this.switchDivId+'"></div>');
+
+    function render() {     
+      ctrl.renderSwitch();
     }
 
     this.events.on('render', function() { 
