@@ -1,5 +1,5 @@
-import {SwitchCtrl} from  './ctrl';
+import {jQuerySwitchCtrl} from  './ctrl';
 
 export {
-  SwitchCtrl as PanelCtrl
+  jQuerySwitchCtrl as PanelCtrl
 };

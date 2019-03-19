@@ -2,7 +2,7 @@ body {
     align-items: start;
 }
 
-.switchbox {
+.gs-switch {
     display: flex;
     justify-content: center;
     align-items: center;

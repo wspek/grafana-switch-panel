@@ -170,6 +170,8 @@ if(jQuery.fn.jquery < "2.0") {
         }, options);
 
         return this.each(function() {
+            console.log(this.id);
+
             var dataToggle = Math.floor((Math.random() * 1000000) + 1);
             var switchOnTpl, switchOffTpl;
             var btnSwitch = $(this);
@@ -342,7 +344,7 @@ if(jQuery.fn.jquery < "2.0") {
 
                     btnSwitch.html(settings.ToggleState == settings.OnValue ? switchOnTpl : switchOffTpl);
 
-                    $('#sw-android-' + dataToggle).on('click', function() {
+                    $('#sw-android-' + dataToggle).on('click', function() {                        
                         var state = $(this).data('state');
                         var selValue = !state ? settings.OnValue : settings.OffValue;
 

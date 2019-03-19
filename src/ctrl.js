@@ -1,16 +1,14 @@
 import {PanelCtrl} from 'app/plugins/sdk';
 import $ from 'jquery';
 
-import './external/jquery.btnswitch';
-import './external/jquery.btnswitch.css!';
+import { renderSwitch } from './gs-switch';
 import './css/panel.css!';
 
 
-export class SwitchCtrl extends PanelCtrl {
-
-  constructor($scope, $injector, alertSrv) {
+export class jQuerySwitchCtrl extends PanelCtrl {
+  constructor($scope, $injector, $compile) {
     super($scope, $injector);
-    
+    this.$compile = $compile;
     this.switchDivId = 'switch_' + this.panel.id;
 
     var panelDefaults = {
@@ -19,20 +17,15 @@ export class SwitchCtrl extends PanelCtrl {
     _.defaults(this.panel, panelDefaults);
 
     this.events.on('panel-initialized', this.render.bind(this));
-  }
 
-  renderSwitch() {
-      $('#'+this.switchDivId).btnSwitch({
-        Theme: 'Android'
-      });
+    $scope.toggle = function() {
+      console.log("Change!");
+    };
   }
 
   link(scope, elem, attrs, ctrl) { 
-    var switchByClass = elem.find('.switchbox');
-    switchByClass.append('<div id="'+this.switchDivId+'"></div>');
-
     function render() {     
-      ctrl.renderSwitch();
+      renderSwitch(scope, ctrl);
     }
 
     this.events.on('render', function() { 
@@ -42,4 +35,5 @@ export class SwitchCtrl extends PanelCtrl {
   }
 }
 
-SwitchCtrl.templateUrl = 'partials/template.html';
+jQuerySwitchCtrl.templateUrl = 'partials/template.html';
+
