@@ -25,7 +25,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
   link(scope, elem, attrs, ctrl) { 
     function render() {     
-      renderSwitch(scope, ctrl);
+      // TODO
     }
 
     this.events.on('render', function() { 
