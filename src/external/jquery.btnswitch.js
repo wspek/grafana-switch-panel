@@ -170,8 +170,6 @@ if(jQuery.fn.jquery < "2.0") {
         }, options);
 
         return this.each(function() {
-            console.log(this.id);
-
             var dataToggle = Math.floor((Math.random() * 1000000) + 1);
             var switchOnTpl, switchOffTpl;
             var btnSwitch = $(this);
