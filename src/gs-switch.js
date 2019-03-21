@@ -1,19 +1,23 @@
 import './external/jquery.btnswitch';
 import './external/jquery.btnswitch.css!';
 
-angular.module('grafana.directives').directive("gsSwitch", function($timeout) {
+angular.module('grafana.directives').directive("gsSwitch", function() {
   return {
     restrict: 'C',
     template: '<div></div>',
     link: function (scope, elem, attrs, ctrl) {
-      // id = 'switch_{number}' where {number} is the panel ID 
-      // This id is set on the controller.
-      var id = scope.$parent.ctrl.switchDivId;  
+      // By using the scope id and the switch number, we can calculate a unique id.
+      var switchNum = elem[0].parentElement.querySelectorAll('.in-switch').length;
+      var id = 'switch_' + scope.$id + '_' + switchNum;
 
       // Add the id to the <div></div> of the template. Later, when the $watch triggers, 
       // jQuery can use this ID to find the right element.
       var switchDivElement = angular.element(elem[0].childNodes[0]);
       switchDivElement.attr('id', id);
+
+      // This class needs to be added to keep count of the number of switches, so we can 
+      // calculate the id (see code above).
+      switchDivElement.addClass('in-switch');
 
       // After the <div></div> template has been loaded, this will be detected by $watch, due to 
       // switchDivElement.children.length changing from 0 to 2. 
