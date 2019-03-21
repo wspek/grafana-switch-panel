@@ -1,9 +1,8 @@
 import {PanelCtrl} from 'app/plugins/sdk';
 import $ from 'jquery';
 
-import { renderSwitch } from './gs-switch';
+import './gs-switch';
 import './css/panel.css!';
-
 
 export class jQuerySwitchCtrl extends PanelCtrl {
   constructor($scope, $injector, $compile) {
@@ -23,12 +22,12 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     };
   }
 
-  link(scope, elem, attrs, ctrl) { 
-    function render() {     
+  link(scope, elem, attrs, ctrl) {
+    function render() {
       // TODO
     }
 
-    this.events.on('render', function() { 
+    this.events.on('render', function() {
       render();
       ctrl.renderingCompleted();
     });
