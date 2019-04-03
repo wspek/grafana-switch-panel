@@ -1,5 +1,5 @@
-import {PanelCtrl} from 'app/plugins/sdk';
-import $ from 'jquery';
+import { PanelCtrl } from 'app/plugins/sdk';
+import { Database } from './database';
 
 import './gs-switch';
 import './css/panel.css!';
@@ -9,8 +9,16 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     super($scope, $injector);
     this.$http = $http;
     this.$compile = $compile;
-    this.switchDivId = 'switch_' + this.panel.id;
-    $scope.switchValues = {greenLedState: false};
+
+    this.db = new Database();
+    this.db.setOnUpdateCallback(function (newRecord) {
+      $scope.switch.setState(newRecord.greenLedState);
+    });
+    this.db.init();
+
+    $scope.switch = {
+      setState: null,
+    };
 
     var panelDefaults = {
       test: 'testing',
