@@ -5,10 +5,12 @@ import './gs-switch';
 import './css/panel.css!';
 
 export class jQuerySwitchCtrl extends PanelCtrl {
-  constructor($scope, $injector, $compile) {
+  constructor($scope, $injector, $compile, $http) {
     super($scope, $injector);
+    this.$http = $http;
     this.$compile = $compile;
     this.switchDivId = 'switch_' + this.panel.id;
+    $scope.switchValues = {greenLedState: false};
 
     var panelDefaults = {
       test: 'testing',
@@ -18,8 +20,41 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     this.events.on('panel-initialized', this.render.bind(this));
 
     $scope.toggle = function() {
-      console.log("Change!");
+      this.ctrl.sendNewConfig(this.switchValues);
     };
+  }
+
+  sendNewConfig(newConfig) {
+    var url = 'https://e-charger-218218.appspot.com/api/lastState/nodemcu1';
+    var data = jQuerySwitchCtrl.normalizeConfig(newConfig);
+    var config = {
+      headers : {
+        // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+      }
+    };
+
+    this.$http.post(url, data, config)
+      .then(
+          function(response) {
+            console.log('SUCCESS');
+            console.log(response);
+          },
+          function(response) {
+            console.log('FAILURE');
+            console.log(response);
+          }
+      );
+  }
+
+  static normalizeConfig(config) {
+    var normalizedConfig = {};
+
+    for (var key in config) {
+      var intValue = config[key] ? 1 : 0;
+      normalizedConfig[key] = intValue;
+    }
+
+    return normalizedConfig;
   }
 
   link(scope, elem, attrs, ctrl) {
