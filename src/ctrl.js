@@ -17,6 +17,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     this.db.init();
 
     $scope.switch = {
+      state: false,
       setState: null,
     };
 

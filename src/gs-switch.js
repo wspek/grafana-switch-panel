@@ -24,29 +24,32 @@ angular.module('grafana.directives').directive("gsSwitch", function() {
       scope.$watch(switchDivElement.children.length, function() {
         // Create the 3rd party jQuery switch.
         var switchElement = $('#' + id).btnSwitch({ Theme: 'Android' });
+        
+        // Add the directives necessary for click actions to the jQuery switch.
+        var inputElement = switchElement.find('input');
+        inputElement.attr('ng-change', 'toggle()');
+        inputElement.attr('ng-model', 'switch.state');
 
         // Create a closure and call it. It's argument will be the switchElement we just created.
         // The closure will return the callback function which we hook up to the scope.
         // This callback function can be called to "physically" set the state of the switch.
         scope.switch.setState = (function (e) {
           function setState(state) {
-            var inputElement = angular.element(e.childNodes[0].childNodes[0]);
+            var inputElement = angular.element(e[0].childNodes[0].childNodes[0]);
 
+            // If the switch is currently not corresponding to the state in the backend,
+            // programmatically trigger a click on it.
             if (inputElement.hasClass('tgl-sw-android-checked') != state) {
-              var labelElement = angular.element(e.childNodes[0].childNodes[1]);
+              var labelElement = angular.element(e[0].childNodes[0].childNodes[1]);
+
               labelElement.trigger('click');
+
+              // We need to change the model, otherwise ng-change will not trigger the first time
+              scope.switch.state = true;
             }
           }
           return setState;
-        })(switchElement[0]);
-        
-        // Add the directives necessary for click actions to the jQuery switch.
-        var inputElement = switchElement.find('input');
-        inputElement.attr('ng-change', 'toggle()');
-        inputElement.attr('ng-model', 'switch.state');
-        inputElement.attr('ng-checked', 'switch.state');
-        inputElement.attr('ng-true-value', '1');
-        inputElement.attr('ng-false-value', '0');
+        })(switchElement);
 
         // Without compiling again, the added attributes will not be picked up by AngularJS.
         scope.$parent.ctrl.$compile(switchElement)(scope);
