@@ -12,7 +12,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
     this.db = new Database();
     this.db.setOnUpdateCallback(function (newRecord) {
-      $scope.switch.setState(newRecord.greenLedState);
+      $scope.switch.setState(newRecord.greenLedState ? true : false);
     });
     this.db.init();
 
@@ -21,49 +21,32 @@ export class jQuerySwitchCtrl extends PanelCtrl {
       setState: null,
     };
 
+    // This function is called when the switch state is changed
+    $scope.toggle = function() {
+      // Add the new state of the switch to the back end DB
+      try {
+        this.db.addData('devices', { 
+          greenLedState: $scope.switch.state ? 1 : 0,
+        });
+      // If something went wrong and the backend DB was not updated, the 
+      // switch needs to move (back) to the last state in the DB
+      } catch (error) {
+        console.log('Caught error while attempting to add data to database. Error: ' + error);
+
+        this.db.getLastEntry('devices', function(data) {
+          setTimeout(function() {
+            $scope.switch.setState(data.greenLedState ? true : false);
+          }, 500);
+        });
+      }
+    }.bind(this);
+
     var panelDefaults = {
       test: 'testing',
     };
     _.defaults(this.panel, panelDefaults);
 
     this.events.on('panel-initialized', this.render.bind(this));
-
-    $scope.toggle = function() {
-      this.ctrl.sendNewConfig(this.switchValues);
-    };
-  }
-
-  sendNewConfig(newConfig) {
-    var url = 'https://e-charger-218218.appspot.com/api/lastState/nodemcu1';
-    var data = jQuerySwitchCtrl.normalizeConfig(newConfig);
-    var config = {
-      headers : {
-        // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-      }
-    };
-
-    this.$http.post(url, data, config)
-      .then(
-          function(response) {
-            console.log('SUCCESS');
-            console.log(response);
-          },
-          function(response) {
-            console.log('FAILURE');
-            console.log(response);
-          }
-      );
-  }
-
-  static normalizeConfig(config) {
-    var normalizedConfig = {};
-
-    for (var key in config) {
-      var intValue = config[key] ? 1 : 0;
-      normalizedConfig[key] = intValue;
-    }
-
-    return normalizedConfig;
   }
 
   link(scope, elem, attrs, ctrl) {

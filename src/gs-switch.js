@@ -27,8 +27,8 @@ angular.module('grafana.directives').directive("gsSwitch", function() {
         
         // Add the directives necessary for click actions to the jQuery switch.
         var inputElement = switchElement.find('input');
-        inputElement.attr('ng-change', 'toggle()');
         inputElement.attr('ng-model', 'switch.state');
+        inputElement.attr('ng-change', 'toggle()');
 
         // Create a closure and call it. It's argument will be the switchElement we just created.
         // The closure will return the callback function which we hook up to the scope.
@@ -41,11 +41,11 @@ angular.module('grafana.directives').directive("gsSwitch", function() {
             // programmatically trigger a click on it.
             if (inputElement.hasClass('tgl-sw-android-checked') != state) {
               var labelElement = angular.element(e[0].childNodes[0].childNodes[1]);
-
               labelElement.trigger('click');
 
               // We need to change the model, otherwise ng-change will not trigger the first time
-              scope.switch.state = true;
+              scope.switch.state = state;
+              scope.$apply();
             }
           }
           return setState;
