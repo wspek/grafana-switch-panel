@@ -4,11 +4,25 @@ import { Database } from './database';
 import './gs-switch';
 import './css/panel.css!';
 
+const panelDefaults = {
+  stateControlVariable: '',
+  switchModel: 'Android',
+  switchModelOptions: ['Android', 'iOS', 'Button', 'Light', 'Swipe'],
+  pollingInterval: 10,
+  offStateColour: '#800000',
+  offStateBackgroundColour: '#B22222',
+  onStateColour: '#3E8E41',
+  onStateBackgroundColour: '#4CAF50',
+};
+
 export class jQuerySwitchCtrl extends PanelCtrl {
   constructor($scope, $injector, $compile, $http) {
     super($scope, $injector);
+    _.defaults(this.panel, panelDefaults);
+
     this.$http = $http;
     this.$compile = $compile;
+    this.scoperef = $scope;
 
     this.db = new Database();
     this.db.setOnUpdateCallback(function (newRecord) {
@@ -17,8 +31,21 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     this.db.init();
 
     $scope.switch = {
+      initialized: false,
+      switchElement: null,
+      style: {
+        model: this.panel.switchModel,
+        offStateColour: this.panel.offStateColour,
+        offStateBackgroundColour: this.panel.offStateBackgroundColour,
+        onStateColour: this.panel.onStateColour,
+        onStateBackgroundColour: this.panel.onStateBackgroundColour,
+      },
       state: false,
       setState: null,
+      // Changes in the below defined variables will be watched in the scope.$watchGroup, defined in
+      // gs-switch.js directive. If something changes, the change will be rendered in this way. 
+      watchGroup: ['switch.style.model', 'switch.style.offStateColour', 'switch.style.offStateBackgroundColour', 
+                                         'switch.style.onStateColour', 'switch.style.onStateBackgroundColour'],
     };
 
     // This function is called when the switch state is changed
@@ -41,23 +68,36 @@ export class jQuerySwitchCtrl extends PanelCtrl {
       }
     }.bind(this);
 
-    var panelDefaults = {
-      test: 'testing',
-    };
-    _.defaults(this.panel, panelDefaults);
-
+    this.events.on('render', this.onRender.bind(this));
+    this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('panel-initialized', this.render.bind(this));
   }
 
-  link(scope, elem, attrs, ctrl) {
-    function render() {
-      // TODO
-    }
+  onInitEditMode() {
+    // determine the path to this plugin
+    var panels = grafanaBootData.settings.panels;
+    var thisPanel = panels[this.pluginId];
+    var thisPanelPath = thisPanel.baseUrl + '/';
 
-    this.events.on('render', function() {
-      render();
-      ctrl.renderingCompleted();
-    });
+    // add the relative path to the partial
+    var optionsPath = thisPanelPath + 'partials/editor.options.html';
+    this.addEditorTab('Options', optionsPath, 2);
+  }
+
+  onChangeStyle() {
+    this.scoperef.switch.style.model = this.panel.switchModel;
+    this.scoperef.switch.style.offStateColour = this.panel.offStateColour;
+    this.scoperef.switch.style.offStateBackgroundColour = this.panel.offStateBackgroundColour;
+    this.scoperef.switch.style.onStateColour = this.panel.onStateColour;
+    this.scoperef.switch.style.onStateBackgroundColour = this.panel.onStateBackgroundColour;
+  }
+
+  onRender() {
+    // FUTURE USE
+  }
+
+  link(scope, elem, attrs, ctrl) {
+    // FUTURE USE
   }
 }
 

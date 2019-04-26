@@ -19,14 +19,31 @@ angular.module('grafana.directives').directive("gsSwitch", function() {
       // calculate the id (see code above).
       switchDivElement.addClass('in-switch');
 
-      // After the <div></div> template has been loaded, this will be detected by $watch, due to
+      // After the <div></div> template has been loaded, this will be detected by $watchGroup, due to
       // switchDivElement.children.length changing from 0 to 2.
-      scope.$watch(switchDivElement.children.length, function() {
+      // Also, when the switch style changes $watchGroup will detect it.
+      scope.$watchGroup([switchDivElement.children.length].concat(scope.switch.watchGroup), function(newVals, oldVals) {
+        // If the switch has not yet been initialized, we should.
+        // But if the switch model value (array elem #1 in the watchGroup) changes we should reinitialize the switch too,
+        // since the switch model (Android, iOS, ...) can only be defined on switch creation.
+        if (!scope.switch.initialized || oldVals[1] !== newVals[1]) {
+          init();
+        }
+
+        // High chance the watch group was triggered because the style was changed. 
+        // Let's accept the overhead and reset it anyway.
+        changeStyle(scope.switch.switchElement, scope.switch.style);
+      });
+
+      function init() {
         // Create the 3rd party jQuery switch.
-        var switchElement = $('#' + id).btnSwitch({ Theme: 'Android' });
-        
+        scope.switch.switchElement = $('#' + id).btnSwitch({ 
+          Theme: scope.switch.style.model, 
+          ToggleState: scope.switch.state 
+        });
+
         // Add the directives necessary for click actions to the jQuery switch.
-        var inputElement = switchElement.find('input');
+        var inputElement = scope.switch.switchElement.find('input');
         inputElement.attr('ng-model', 'switch.state');
         inputElement.attr('ng-change', 'toggle()');
 
@@ -49,11 +66,32 @@ angular.module('grafana.directives').directive("gsSwitch", function() {
             }
           }
           return setState;
-        })(switchElement);
+        })(scope.switch.switchElement);
+
+        scope.switch.initialized = true;
 
         // Without compiling again, the added attributes will not be picked up by AngularJS.
-        scope.$parent.ctrl.$compile(switchElement)(scope);
-      });
+        scope.$parent.ctrl.$compile(scope.switch.switchElement)(scope);
+      }
+
+      function changeStyle(elem, switchStyle) {
+        var switchStyleElement = document.getElementById('switch');
+
+        if (!switchStyleElement) {
+          switchStyleElement = document.createElement('style');
+          switchStyleElement.id = 'switch';
+          switchStyleElement.type = 'text/css';
+          document.getElementsByTagName('head')[0].appendChild(switchStyleElement);
+        }
+
+        var labelElement = angular.element(elem.find('label'));
+        labelElement.addClass('switch-colours');
+
+        switchStyleElement.innerHTML = '.tgl-sw-android + .switch-colours { background: ' + switchStyle.offStateBackgroundColour + ' !important; }\n' +
+                                       '.tgl-sw-android + .switch-colours:after { background: ' + switchStyle.offStateColour + ' !important; }\n' +
+                                       '.tgl-sw-android-checked + .switch-colours { background: ' + switchStyle.onStateBackgroundColour + ' !important; }\n' +
+                                       '.tgl-sw-android-checked + .switch-colours:after { background: ' + switchStyle.onStateColour + ' !important; }\n';
+      }
     }
   };
 });
