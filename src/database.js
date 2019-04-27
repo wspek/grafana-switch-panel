@@ -37,16 +37,20 @@ export class Database {
     }
 
     getLastEntry(table, callback) {
-      this.db.collection(table).orderBy("timeStamp", "desc").limit(1).get({source: 'server'})
-      .then(function(querySnapshot) {
+      var promise = this.db.collection(table).orderBy("timeStamp", "desc").limit(1).get({source: 'server'});
+      
+      promise.then(function(querySnapshot) {
         // Document was found in the server. If no server document exists,
         // an error will be returned to the 'catch' block below.
         querySnapshot.forEach(function(doc) {
           callback(doc.data());
         });
-      }).catch(function(error) {
+      })
+      .catch(function(error) {
         console.log("Error getting server document while getting last entry:", error);
       });
+
+      return promise;
     }
 
     addData(table, data) {

@@ -2,13 +2,14 @@ import { PanelCtrl } from 'app/plugins/sdk';
 import { Database } from './database';
 
 import './gs-switch';
+import './pollservice';
 import './css/panel.css!';
 
 const panelDefaults = {
   stateControlVariable: '',
   switchModel: 'Android',
   switchModelOptions: ['Android', 'iOS', 'Button', 'Light', 'Swipe'],
-  pollingInterval: 10,
+  pollingInterval: 2,
   offStateColour: '#800000',
   offStateBackgroundColour: '#B22222',
   onStateColour: '#3E8E41',
@@ -16,13 +17,15 @@ const panelDefaults = {
 };
 
 export class jQuerySwitchCtrl extends PanelCtrl {
-  constructor($scope, $injector, $compile, $http) {
+  constructor($scope, $injector, $compile, $http, $interval) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
     this.$http = $http;
     this.$compile = $compile;
     this.scoperef = $scope;
+    this.$interval = $interval;
+    this.intervalPromise = null;
 
     this.db = new Database();
     this.db.setOnUpdateCallback(function (newRecord) {
@@ -47,7 +50,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
       watchGroup: ['switch.style.model', 'switch.style.offStateColour', 'switch.style.offStateBackgroundColour', 
                                          'switch.style.onStateColour', 'switch.style.onStateBackgroundColour'],
     };
-
+      
     // This function is called when the switch state is changed
     $scope.toggle = function() {
       // Add the new state of the switch to the back end DB
@@ -71,6 +74,37 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     this.events.on('render', this.onRender.bind(this));
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('panel-initialized', this.render.bind(this));
+
+    // Start polling
+    this.poll();
+  }
+
+  poll() {
+    if (this.panel.pollingInterval === null) {
+      this.panel.pollingInterval = 10;
+    }
+    if (this.panel.pollingInterval <= 0) {
+      this.panel.pollingInterval = 1;
+    }
+    if (this.panel.pollingInterval > 86400) {
+      this.panel.pollingInterval = 86400;
+    }
+
+    if (this.intervalPromise) {
+      this.$interval.cancel(this.intervalPromise);
+    }
+
+    // Start polling the database
+    this.intervalPromise = this.$interval(function() {
+      this.db.getLastEntry('devices', function(data) {
+        this.scoperef.switch.setState(!!data.greenLedState);
+      }.bind(this));
+    }.bind(this), this.panel.pollingInterval * 1000);
+
+    //Always clear the interval when the view is destroyed, otherwise it will keep polling and leak memory
+    this.scoperef.$on('$destroy', function() {
+      this.$interval.cancel(this.intervalPromise);
+    }.bind(this));
   }
 
   onInitEditMode() {
