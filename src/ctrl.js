@@ -53,7 +53,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
       // Add the new state of the switch to the back end DB
       try {
         this.db.addData('devices', { 
-          greenLedState: $scope.switch.state ? 1 : 0,
+          [this.panel.stateControlVariable]: $scope.switch.state ? 1 : 0,
         });
       // If something went wrong and the backend DB was not updated, the 
       // switch needs to move (back) to the last state in the DB

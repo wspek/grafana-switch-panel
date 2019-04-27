@@ -1,44 +1,42 @@
 <div class="editor-row">
 	<div class="section gf-form-group">
+		<h5 class="section-heading">Functional Options</h5>
+		<div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label width-10">Control variable
+						<tip>The text value defined here determines the name of the variable whose state is controlled with this switch</tip></label>
+				<input type="text" class="gf-form-input width-16" ng-model="ctrl.panel.stateControlVariable" placeholder="greenLedState"></input>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="editor-row">
+	<div class="section gf-form-group">
 		<h5 class="section-heading">Style Options</h5>
 		<div class="gf-form-inline">
-      <div class="gf-form">
-        <label class="gf-form-label width-10">Switch model
-				</label>
-        <div class="gf-form-select-wrapper width-10">
-          <select class="gf-form-input" ng-model="ctrl.panel.switchModel" ng-options="f for f in ctrl.panel.switchModelOptions" ng-change="ctrl.onChangeStyle()"></select>
-        </div>
-      </div>
-    </div>
+			<div class="gf-form">
+				<label class="gf-form-label width-10">Switch model</label>
+				<div class="gf-form-select-wrapper width-10">
+					<select class="gf-form-input" ng-model="ctrl.panel.switchModel" ng-options="f for f in ctrl.panel.switchModelOptions" ng-change="ctrl.onChangeStyle()"></select>
+				</div>
+			</div>
+		</div>
 		<div class="gf-form-inline">
-      	<div class="gf-form">
-        	<label class="gf-form-label width-5">Off state
-					</label>
-        	<span class="gf-form-label">
-          	<spectrum-picker ng-model="ctrl.panel.offStateColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker>
-        	</span>
-				</div>
-				<div class="gf-form">
-					<label class="gf-form-label width-10">Off state background
-					</label>
-					<span class="gf-form-label">
-						<spectrum-picker ng-model="ctrl.panel.offStateBackgroundColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker>
-					</span>
-				</div>
-      	<div class="gf-form">
-        	<label class="gf-form-label width-5">On state
-					</label>
-        	<span class="gf-form-label">
-          	<spectrum-picker ng-model="ctrl.panel.onStateColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker>
-        	</span>
-				</div>
-				<div class="gf-form">
-						<label class="gf-form-label width-10">On state background
-						</label>
-						<span class="gf-form-label">
-							<spectrum-picker ng-model="ctrl.panel.onStateBackgroundColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker>
-						</span>
-					</div>
+			<div class="gf-form">
+				<label class="gf-form-label width-5">Off state</label>
+				<span class="gf-form-label"><spectrum-picker ng-model="ctrl.panel.offStateColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker></span>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label width-10">Off state background</label>
+				<span class="gf-form-label"><spectrum-picker ng-model="ctrl.panel.offStateBackgroundColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker></span>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label width-5">On state</label>
+				<span class="gf-form-label"><spectrum-picker ng-model="ctrl.panel.onStateColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker></span>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label width-10">On state background</label>
+				<span class="gf-form-label"><spectrum-picker ng-model="ctrl.panel.onStateBackgroundColour" ng-change="ctrl.onChangeStyle()" ></spectrum-picker></span>
 			</div>
 		</div>
 	</div>
