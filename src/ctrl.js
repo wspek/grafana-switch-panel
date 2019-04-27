@@ -26,7 +26,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
     this.db = new Database();
     this.db.setOnUpdateCallback(function (newRecord) {
-      $scope.switch.setState(newRecord.greenLedState ? true : false);
+      $scope.switch.setState(!!newRecord.greenLedState);
     });
     this.db.init();
 
@@ -62,7 +62,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
         this.db.getLastEntry('devices', function(data) {
           setTimeout(function() {
-            $scope.switch.setState(data.greenLedState ? true : false);
+            $scope.switch.setState(!!data.greenLedState);
           }, 500);
         });
       }
