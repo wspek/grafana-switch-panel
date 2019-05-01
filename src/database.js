@@ -24,12 +24,8 @@ export class Database {
             }
           }
           catch(e) {
-            if (e.name == 'TypeError') {
-              console.log('No database update callback function defined. Please call init() after setting the callback function with setOnUpdateCallback.');
-            }
-            else {
-              throw e; // rethrow (don't know how to deal with it)
-            }
+            console.log(e);
+            throw e; // rethrow (don't know how to deal with it)
           }
         };
       })(this.updateCallback);
