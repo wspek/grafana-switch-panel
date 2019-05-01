@@ -6,7 +6,7 @@ import './pollservice';
 import './css/panel.css!';
 
 const panelDefaults = {
-  stateControlVariable: '',
+  stateControlVariable: 'greenLedState',
   switchModel: 'Android',
   switchModelOptions: ['Android', 'iOS', 'Button', 'Light', 'Swipe'],
   pollingInterval: 10,
@@ -29,8 +29,8 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
     this.db = new Database();
     this.db.setOnUpdateCallback(function (newRecord) {
-      $scope.switch.setState(!!newRecord.greenLedState);
-    });
+      $scope.switch.setState(!!newRecord[this.panel.stateControlVariable]);
+    }.bind(this));
     this.db.init();
 
     $scope.switch = {
@@ -65,8 +65,8 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
         this.db.getLastEntry('devices', function(data) {
           setTimeout(function() {
-            $scope.switch.setState(!!data.greenLedState);
-          }, 500);
+            $scope.switch.setState(!!data[this.panel.stateControlVariable]);
+          }.bind(this), 500);
         });
       }
     }.bind(this);
@@ -97,7 +97,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     // Start polling the database
     this.intervalPromise = this.$interval(function() {
       this.db.getLastEntry('devices', function(data) {
-        this.scoperef.switch.setState(!!data.greenLedState);
+        this.scoperef.switch.setState(!!data[this.panel.stateControlVariable]);
       }.bind(this));
     }.bind(this), this.panel.pollingInterval * 1000);
 
