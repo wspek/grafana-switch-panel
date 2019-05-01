@@ -16,7 +16,12 @@ export class Database {
       var snapShotCallback = (function (callback) {
         return function(querySnapshot) {
           try {
-            callback(querySnapshot.docs[0].data());
+            // If hasPendingWrites is false, the snapshot callback function was triggered because of a local write,
+            // and the write has not yet been completed in the backend DB. We don't want this, because our state needs
+            // to always represent the DB state. See: https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
+            if (!querySnapshot.metadata.hasPendingWrites) {
+              callback(querySnapshot.docs[0].data());
+            }
           }
           catch(e) {
             if (e.name == 'TypeError') {

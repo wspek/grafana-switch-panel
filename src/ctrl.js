@@ -9,7 +9,7 @@ const panelDefaults = {
   stateControlVariable: '',
   switchModel: 'Android',
   switchModelOptions: ['Android', 'iOS', 'Button', 'Light', 'Swipe'],
-  pollingInterval: 2,
+  pollingInterval: 10,
   offStateColour: '#800000',
   offStateBackgroundColour: '#B22222',
   onStateColour: '#3E8E41',
