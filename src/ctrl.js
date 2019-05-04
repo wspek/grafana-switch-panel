@@ -27,12 +27,7 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     this.scoperef = $scope;
     this.$interval = $interval;
     this.intervalPromise = null;
-
-    this.db = new Database();
-    this.db.setOnUpdateCallback(function (newRecord) {
-      $scope.switch.setState(!!newRecord[this.panel.stateControlVariable]);
-    }.bind(this));
-    this.db.init();
+    
 
     $scope.switch = {
       initialized: false,
@@ -73,7 +68,8 @@ export class jQuerySwitchCtrl extends PanelCtrl {
 
     this.events.on('render', this.onRender.bind(this));
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    this.events.on('panel-initialized', this.render.bind(this));
+    this.events.on('panel-initialized', this.onPanelInitialized.bind(this));
+    this.events.on('panel-teardown', this.onPanelTeardown.bind(this));
 
     // Start polling
     this.poll();
@@ -116,6 +112,14 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     // add the relative path to the partial
     var optionsPath = thisPanelPath + 'partials/editor.options.html';
     this.addEditorTab('Options', optionsPath, 2);
+  }
+
+  onPanelInitialized() {
+    this.db = new Database('device-configs', this.panel.deviceName);
+    this.db.setOnUpdateCallback(function (config) {
+      this.scoperef.switch.setState(!!config[this.panel.stateControlVariable]);
+    }.bind(this));
+    this.db.init();
   }
 
   onChangeStyle() {
