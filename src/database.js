@@ -10,7 +10,9 @@ export class Database {
     }
 
     init() {
-      firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
   
       this.db = firebase.firestore();
   

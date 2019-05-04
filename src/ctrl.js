@@ -134,6 +134,10 @@ export class jQuerySwitchCtrl extends PanelCtrl {
     // FUTURE USE
   }
 
+  onPanelTeardown() {
+    // FUTURE USE
+  }
+
   link(scope, elem, attrs, ctrl) {
     // FUTURE USE
   }
