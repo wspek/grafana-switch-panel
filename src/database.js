@@ -2,7 +2,9 @@ import { firebaseConfig } from './firebase_config';
 import * as firebase from './external/firebase';
 
 export class Database {
-    constructor() {
+    constructor(name, table) {
+        this.name = name;
+        this.table = table;
         this.db = null;
         this.updateCallback = null;
     }
@@ -14,13 +16,13 @@ export class Database {
   
       // We require a closure for 'callback' to be in scope of the onSnapshot callback function
       var snapShotCallback = (function (callback) {
-        return function(querySnapshot) {
+        return function(doc) {
           try {
             // If hasPendingWrites is false, the snapshot callback function was triggered because of a local write,
             // and the write has not yet been completed in the backend DB. We don't want this, because our state needs
             // to always represent the DB state. See: https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
-            if (!querySnapshot.metadata.hasPendingWrites) {
-              callback(querySnapshot.docs[0].data());
+            if (!doc.metadata.hasPendingWrites) {
+              callback(doc.data());
             }
           }
           catch(e) {
@@ -30,13 +32,14 @@ export class Database {
         };
       })(this.updateCallback);
   
-      this.db.collection("devices").orderBy("timeStamp", "desc").limit(1).onSnapshot(snapShotCallback);
+      this.db.collection(this.name).doc(this.table).onSnapshot(snapShotCallback);
     }
 
     setOnUpdateCallback(callback) {
       this.updateCallback = callback;
     }
 
+    // DEPRECATED: Uses old Firestore document setup.
     getLastEntry(table, callback) {
       var promise = this.db.collection(table).orderBy("timeStamp", "desc").limit(1).get({source: 'server'});
       
@@ -54,6 +57,20 @@ export class Database {
       return promise;
     }
 
+    getData(table, callback) {
+      this.db.collection(this.name).doc(table).get({source: 'server'}).then(function(doc) {
+        if (doc.exists) {
+          callback(doc.data());
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+    }
+
+    // DEPRECATED: Uses old Firestore document setup.
     addData(table, data) {
       data.timeStamp = firebase.firestore.FieldValue.serverTimestamp();
 
@@ -63,7 +80,19 @@ export class Database {
       })
       .catch(function(error) {
           console.error("Error adding document: ", error);
-          throw error;
+          throw(error);
       });
+    }
+
+    updateData(table, data) {
+      var promise = this.db.collection(this.name).doc(table).update(data);
+
+      promise.then(function(docRef) {
+        console.log("Document written: ", table);
+      }).catch(function(error) {
+        console.log(error);
+      });
+
+      return promise;
     }
 }

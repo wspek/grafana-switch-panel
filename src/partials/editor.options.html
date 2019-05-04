@@ -3,9 +3,12 @@
 		<h5 class="section-heading">Functional Options</h5>
 		<div class="gf-form-inline">
 			<div class="gf-form">
+				<label class="gf-form-label width-10">Device name
+						<tip>Determines the device whose state is controlled with this switch</tip></label>
+				<input type="text" class="gf-form-input width-16" ng-model="ctrl.panel.deviceName" placeholder="" ng-model-onblur></input>
 				<label class="gf-form-label width-10">Control variable
-						<tip>The text value defined here determines the name of the variable whose state is controlled with this switch</tip></label>
-				<input type="text" class="gf-form-input width-16" ng-model="ctrl.panel.stateControlVariable" placeholder=""></input>
+					<tip>Determines the name of the variable whose state is controlled with this switch</tip></label>
+			<input type="text" class="gf-form-input width-16" ng-model="ctrl.panel.stateControlVariable" placeholder="" ng-model-onblur></input>
 			</div>
 		</div>
 		<div class="gf-form-inline">
